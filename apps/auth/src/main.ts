@@ -1,8 +1,23 @@
 import { NestFactory } from '@nestjs/core';
+import {Transport, MicroserviceOptions} from '@nestjs/microservices'
 import { AuthModule } from './auth.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AuthModule);
-  await app.listen(process.env.port ?? 3000);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AuthModule ,
+    {
+      transport:Transport.RMQ,
+      options:{
+        urls:['amqp://localhost:5672'],
+        queue: 'auth_queue',
+        queueOptions:{
+          durable:true,
+        },
+
+      },
+    },
+  );
+  await app.listen();
+  
 }
 bootstrap();

@@ -1,8 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class GatewayService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(
+    @Inject('AUTH_SERVICE')
+    private readonly authClient: ClientProxy,
+  ) {}
+
+  async pingAuth() {
+    return firstValueFrom(
+      this.authClient.send('auth.ping', {}),
+    );
   }
 }
