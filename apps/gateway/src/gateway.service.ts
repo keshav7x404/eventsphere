@@ -14,4 +14,5 @@ export class GatewayService {
       this.authClient.send('auth.ping', {}),
     );
   }
+  
 }
